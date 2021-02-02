@@ -1,0 +1,7 @@
+Z:\cts pdfs\telegram questions\CodeChallengePart1\bin\Debug\CodeChallengePart1.exe.config
+Z:\cts pdfs\telegram questions\CodeChallengePart1\bin\Debug\CodeChallengePart1.exe
+Z:\cts pdfs\telegram questions\CodeChallengePart1\bin\Debug\CodeChallengePart1.pdb
+Z:\cts pdfs\telegram questions\CodeChallengePart1\obj\Debug\CodeChallengePart1.csprojAssemblyReference.cache
+Z:\cts pdfs\telegram questions\CodeChallengePart1\obj\Debug\CodeChallengePart1.csproj.CoreCompileInputs.cache
+Z:\cts pdfs\telegram questions\CodeChallengePart1\obj\Debug\CodeChallengePart1.exe
+Z:\cts pdfs\telegram questions\CodeChallengePart1\obj\Debug\CodeChallengePart1.pdb
