@@ -1,0 +1,98 @@
+Aquila:
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StudentProject   //DO NOT change the namespace name
+{
+    class StaffUtility      //DO NOT change the class name
+    
+    {
+        StaffContext sc=new StaffContext();
+        
+        public Staff AddStaff(Staff staff)      //DO NOT change the method signature
+        {
+            //fill code here
+             var s=sc.Staffs.Add(staff);
+             sc.SaveChanges();
+             return s;
+             
+        }
+
+        public Department AddDepartment(Department department) //DO NOT change the method signature
+        {
+            //fill code here
+            var d=sc.Departments.Add(department);
+            sc.SaveChanges();
+            return d;
+        }
+
+        public Staff GetStaffById(int Id)  //DO NOT change the method signature
+        {
+           //fill code here
+           var s1=sc.Staffs.FirstOrDefault(s=>s.Id==Id);
+           return s1;
+        }
+
+        public List<Staff> GetStaffsList(string deptName)   //DO NOT change the method signature
+        {
+            //fill code here
+            var s2=sc.Staffs.Where(a=>a.DeptName==deptName).Select(b=>b);
+            sc.SaveChanges();
+            return s2.ToList();
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+
+namespace StudentProject     //DO NOT change the namespace name
+{
+    public class StaffContext : DbContext      //DO NOT change the class name
+    {
+       
+        public StaffContext(): base("name=StaffContext"){}
+
+        
+        //Implement virtual property for 'Staffs' and 'Departments' with required 'DbSet' declaration
+        public DbSet<Staff> Staffs {get; set;}
+        public DbSet<Department> Departments {get; set;}
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //Map Staff to StaffDetail table 
+            modelBuilder.Entity<Staff>().ToTable("StaffDetail");
+            //Map Department to DepartmentDetail table
+            modelBuilder.Entity<Department>().ToTable("DepartmentDetail");
+            //Make 'DeptName' as primary key in Department Entity
+            modelBuilder.Entity<Department>().HasKey(t=>t.DeptName);
+            // configures one-to-many relationship as mentioned in the problem statement
+            modelBuilder.Entity<Department>().HasMany<Staff>(g=>g.StaffList).WithRequired(s=>s.Department).HasForeignKey(s=>s.DeptName);
+        }
+    }
+
+    public class Staff  //DO NOT change the class name
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Experience { get; set; }
+        public double Salary { get; set; }
+        // Add 2 properties
+        //1. Include a reference navigation property of Department type 
+        public Department Department {get; set;}
+        //2. foreign key property of DeptName
+        public string DeptName {get; set;}
+    }
+
+    public class Department     //DO NOT change the class name
+    {
+        public int Code { get; set; }
+        public string DeptName { get; set; }
+        //Include a collection navigation property of type ICollection<Staff> 
+        public ICollection<Staff> StaffList {get; set;}
+    }
+}
