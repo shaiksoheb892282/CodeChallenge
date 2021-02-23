@@ -1,0 +1,143 @@
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StudentProject
+{
+    class StaffUtility      //DO NOT change the class name
+
+    {
+        StaffContext sc = new StaffContext();
+
+        public Staff AddStaff(Staff staff)      //DO NOT change the method signature
+        {
+            //fill code here
+            var s = sc.Staffs.Add(staff);
+            sc.SaveChanges();
+            Console.WriteLine("Staff Details Inserted Successfully");
+            return s;
+
+        }
+
+        public Department AddDepartment(Department department) //DO NOT change the method signature
+        {
+            //fill code here
+            /* Alternative statements
+            
+            Department d = null;
+            var context = new StaffContext();
+            d = context.Departments.Add(department);
+            context.SaveChanges();
+            Console.WriteLine("Department Details Inserted Successfully");
+            return d;
+
+             */
+            var d = sc.Departments.Add(department);
+            sc.SaveChanges();
+            Console.WriteLine("Department Details Inserted Successfully");
+            return d;
+        }
+
+        public Staff GetStaffById(int Id)  //DO NOT change the method signature
+        {
+            //fill code here
+            /* Alternative statements
+             
+            Staff s1 = null;
+            var context = new StaffContext();
+            s1 = context.Staffs.Find(Id);
+            return s1;
+
+             */
+            var s1 = sc.Staffs.FirstOrDefault(s => s.Id == Id);
+            return s1;
+        }
+
+        public List<Staff> GetStaffsList(string deptName)   //DO NOT change the method signature
+        {
+            //fill code here
+            /* Alternative statements
+            
+            var context = new StaffContext();
+            return context.Staffs.Where(c => c.Department.DeptName.Equals(deptName)).ToList<Staff>();
+
+             */
+
+            var s2 = sc.Staffs.Where(a => a.DeptName == deptName).Select(b => b);
+            sc.SaveChanges();
+            return s2.ToList();
+        }
+    }
+    public class StaffContext : DbContext      //DO NOT change the class name
+    {
+
+        public StaffContext() : base("name=StaffContext") { }
+
+
+        //Implement virtual property for 'Staffs' and 'Departments' with required 'DbSet' declaration
+        public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //Map Staff to StaffDetail table 
+            modelBuilder.Entity<Staff>().ToTable("StaffDetail");
+            //Map Department to DepartmentDetail table
+            modelBuilder.Entity<Department>().ToTable("DepartmentDetail");
+            //Make 'DeptName' as primary key in Department Entity
+            modelBuilder.Entity<Department>().HasKey(t => t.DeptName);
+            // configures one-to-many relationship as mentioned in the problem statement
+            modelBuilder.Entity<Department>().HasMany<Staff>(g => g.StaffList).WithRequired(s => s.Department).HasForeignKey(s => s.DeptName);
+        }
+    }
+
+    public class Staff  //DO NOT change the class name
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Experience { get; set; }
+        public double Salary { get; set; }
+        // Add 2 properties
+        //1. Include a reference navigation property of Department type 
+        public Department Department { get; set; }
+        //2. foreign key property of DeptName
+        public string DeptName { get; set; }
+    }
+
+    public class Department     //DO NOT change the class name
+    {
+        public int Code { get; set; }
+        public string DeptName { get; set; }
+        //Include a collection navigation property of type ICollection<Staff> 
+        public ICollection<Staff> StaffList { get; set; }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Staff staff = new Staff();
+            Department department = new Department();
+            StaffUtility staffUtility = new StaffUtility();
+            Console.WriteLine("Enter the Department Code");
+            department.Code = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter the Department Name");
+            department.DeptName = Console.ReadLine();
+            Console.WriteLine("Enter the Staff Name");
+            staff.Name = Console.ReadLine();
+            Console.WriteLine("Enter the Department Name");
+            staff.DeptName = Console.ReadLine();
+            Console.WriteLine("Enter the Experience");
+            staff.Experience= Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Salary");
+            staff.Salary= Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Staff id");
+            int id= Convert.ToInt32(Console.ReadLine());
+            staffUtility.GetStaffById(id);
+            Console.WriteLine("Enter Department Name");
+            string name = Console.ReadLine();
+            staffUtility.GetStaffsList(name);
+        }
+    }
+}
