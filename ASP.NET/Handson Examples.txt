@@ -1,3 +1,89 @@
+Ex 1.1 - Controllers and Actions
+
+1.Ex1Controller.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_App1.Controllers               //DO NOT change the namespace name
+{
+    public class Ex1Controller : Controller  //DO NOT change the class name
+    {
+        List<String> breakingNews = new List<String>()      //DO NOT change this declaration and values
+        {
+            "PM visit brings business","10% slash in GST","Top Player announced retirement","India wins series"
+        };
+
+        // Implement 'NewsByChoice' action  
+        public ActionResult NewsByChoice(int id)
+        {
+            return Content(breakingNews[id-1]);
+        }
+        
+        // Implement 'AllNews' action
+        
+        public ActionResult AllNews(){
+            string s="";
+            foreach(var i in breakingNews){
+                s+=i+"\n";
+            }
+            return Content(s);
+        }
+        
+    }
+}
+
+
+
+Ex 1.2 Controllers and Actions
+
+1.Ex2Controller.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
+
+namespace ASP_App1.Controllers            //DO NOT change the namespace name
+{
+    public class Ex2Controller : Controller     //DO NOT change the class name
+    {
+        
+        // Implement 'Course' action
+        
+        public ActionResult Course(int id){
+            if(id==1){
+                return RedirectToAction("JavaCourse");
+            }
+            return RedirectToAction("DotNetCourse");
+        }
+        
+        // Implement 'JavaCourse' action
+        
+        public ActionResult JavaCourse(){
+            return View();
+        }
+        
+        // Implement 'DotNetCourse' action
+        
+        public ActionResult DotNetCourse(){
+            return View();
+        }
+        
+    }
+}
+
+2.DotNetCourse.cshtml
+
+
+
+3.JavaCourse.cshtml
+
+
 Ex 2.1 - Working With View Bag
 
 1.HomeController.cs
