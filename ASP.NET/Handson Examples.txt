@@ -1,3 +1,234 @@
+Ex 2.1 - Working With View Bag
+
+1.HomeController.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_App1.Controllers            //DO NOT change the namespace name
+{
+    
+    public class HomeController : Controller       //DO NOT change the class name
+    {
+
+        // DO NOT change the following declaration and values
+        String business = "Flipkart";
+        String type = "E-commerce";
+        int founded = 2007;
+        String website = "www.flipkart.com";
+
+
+        // Implement 'About' action with Route 'flipkart/info'
+        
+         [Route("flipkart/info")]
+        public ActionResult About(){
+            ViewBag.Business = business;
+            ViewBag.Type = type;
+            ViewBag.Founded = founded;
+            ViewBag.Website = website;
+            return View();
+        }
+        
+    }
+}
+
+2.About.cshtml
+
+//About.cshtml
+<h1>@ViewBag.Business</h1>
+<h2>@ViewBag.Type</h2>
+<h2>@ViewBag.Founded</h2>
+<h2>@ViewBag.Website</h2>
+
+Ex 3.1 Working With Model Binding
+
+1.Ex3Controller.cs
+
+using ASP_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_App1.Controllers       //DO NOT change the namespace name
+{
+    public class Ex3Controller : Controller         //DO NOT change the class name
+    {
+        // Implement 'Index' action      
+        
+        public ActionResult Index(){
+            Course course = new Course();
+            course.CourseId = "C101";
+            course.CourseName = "Java";
+            course.Duration = 40;
+            course.Level = "Beginner";
+            return RedirectToAction("CourseDescription",course);
+        }
+        
+        // Implement 'IndexChoice' action
+        
+        public ActionResult IndexChoice(int Id){
+            if(Id==1){
+                return RedirectToAction("Index");
+            }
+            Department department = new Department();
+            department.CourseList = new List<String>{"Java","Dotnet","Python","Ruby"};
+            return RedirectToAction("CourseList",department);
+        } 
+        
+        // Implement 'CourseDescription' action
+        
+        public ActionResult CourseDescription(Course course){
+            return View(course);
+        }
+        
+        // Implement 'CourseList' action
+        
+        public ActionResult CourseList(Department department){
+            return View(department);
+        }
+        
+    }
+}
+
+2.Course.cs
+
+// THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_App1.Models
+{
+    public class Course
+    {
+        public String CourseName { get; set; }
+        public String  CourseId{ get; set; }
+        public int  Duration { get; set; }
+        public string Level { get; set; }
+            
+    }
+
+    public class Department
+    {
+        public List<String> CourseList { get; set; } 
+    }
+}
+
+3.CourseDescription.cshtml
+
+@model ASP_App1.Models.Course
+Course Details
+<table>
+    <tr>
+        <td><label>Course ID:</label></td>
+        <td><input type="text" id="CourseId" value="@Model.CourseId" /></td>
+    </tr>
+    <tr>
+        <td><label>Course Name:</label></td>
+        <td><input type="text" id="CourseName" value="@Model.CourseName" /></td>
+    </tr>
+    <tr>
+        <td><label>Course Duration:</label></td>
+        <td><input type="number" id="Duration" value="@Model.Duration" /></td>
+    </tr>
+    <tr>
+        <td><label>Course Level:</label></td>
+        <td><input type="text" id="Level" value="@Model.Level" /></td>
+    </tr>
+</table>
+
+
+
+4.CourseList.cshtml
+
+//CourseList.cshtml
+@model ASP_App1.Models.Department
+<h2>Available Courses</h2>
+@foreach(var i in Model.CourseList){
+            <p>@i</p>
+}
+
+
+
+Ex 3.2 Working With Model Binding
+
+1.Ex3Controller.cs
+
+using ASP_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_App1.Controllers           //DO NOT change the namespace name
+{
+    public class Ex3Controller : Controller       //DO NOT change the class name
+    {
+        //DO NOT change the below variable declaration and values
+         List<ShoppingCart> l1 = new List<ShoppingCart>() {new ShoppingCart("CA1","Shoe",3000,"Sport"),
+                                                          new ShoppingCart("CA2", "Shirt", 1500, "Men's Wear"),
+                                                          new ShoppingCart("CA3","Watch",4000,"Accessories"),
+                                                          new ShoppingCart("CA4","Samsung",15000,"Mobiles")};
+        
+         // Implement 'Cart' action
+        [HttpPost]
+         public ActionResult Cart(ShoppingCart cart){
+             return View(cart);
+         }
+       // Implement 'Cart' action as Http POST
+        [HttpGet]
+        public ActionResult Cart(int id){
+            ShoppingCart s = l1[id-1];
+            return View(s);
+        }
+    }
+}
+
+2.ShoppingCart.cs
+
+//THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_App1.Models
+{
+    public class ShoppingCart
+    {
+        public String CartId { get; set; }
+        public String  ItemName{ get; set; }
+        public int  Price { get; set; }
+        public string ItemType { get; set; }
+        
+        public ShoppingCart(){}
+            
+        public ShoppingCart(String cartId,String itemName, int price, String itemType)
+        {
+            this.ItemName = itemName;
+            this.CartId = cartId;
+            this.Price = price;
+            this.ItemType = itemType;
+        }
+    }
+}
+
+3.Cart.cshtml
+
+@model ASP_App1.Models.ShoppingCart
+<h3>Shopping Cart Details</h3>
+@Model.CartId
+@Model.ItemName
+@Model.Price
+@Model.ItemType
+
 Ex 4-1 Working With HTTP POST
 
 1.Course.cshtml
