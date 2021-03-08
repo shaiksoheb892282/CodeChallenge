@@ -1,0 +1,609 @@
+Ex 4-1 Working With HTTP POST
+
+1.Course.cshtml
+
+@model ASP_App1.Models.Course
+<h1>Enter New Course Details</h1>
+@using(Html.BeginForm(“Course”,	“Course”))
+{
+				<div	class=“form-group”>
+								@Html.LabelFor(m	=>	m.CourseName)
+								@Html.TextBoxFor(m	=>	m.CourseName)
+				</div>
+				<div	class=“form-group”>
+								@Html.LabelFor(m	=>	m.CourseId)
+								@Html.TextBoxFor(m	=>	m.CourseId)
+				</div>
+				<div	class=“form-group”>
+								@Html.LabelFor(m	=>	m.Duration)
+								@Html.TextBoxFor(m	=>	m.Duration)
+				</div>
+				<div	class=“form-group”>
+								@Html.LabelFor(m	=>	m.Level)
+								@Html.TextBoxFor(m	=>	m.Level)
+				</div>
+				<input	type=“submit” value="Submit" />
+}	
+@if(Model!=null){
+<h1>Details of the New Course</h1>
+<table>
+    <tr>
+        <td><label for="name">Course Name</label></td>
+        <td><input type="text" id="name" value=@Model.CourseName />
+    <tr>
+    <tr>
+        <td><label for="id">Course Id</label></td>
+        <td><input type="text" id="id" value=@Model.CourseId />
+    <tr>
+    <tr>
+        <td><label for="duration">Duration</label></td>
+        <td><input type="number" id="duration" value=@Model.Duration />
+    <tr>
+    <tr>
+        <td><label for="level">Level</label></td>
+        <td><input type="text" id="level" value=@Model.Level />
+    <tr>
+</table>
+}
+
+2.CourseController.cs
+
+using ASP_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_App1.Controllers               //DO NOT change the namespace name
+{
+    public class CourseController : Controller    //DO NOT change the class name
+    {
+        // Implement 'Course' action
+        
+        public ActionResult Course(){
+            return View();
+        }
+        
+       // Implement 'Course' action as Http POST
+       
+       [HttpPost]
+       public ActionResult Course(Course c){
+           return View(c);
+       }
+    }
+}
+
+3.Course.cs
+
+//THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_App1.Models
+{
+    public class Course
+    {
+        public String CourseName { get; set; }
+        public String  CourseId{ get; set; }
+        public int  Duration { get; set; }
+        public string Level { get; set; }
+            
+    }
+
+}
+
+
+
+Ex 4-2 Working With HTTP POST
+
+1.VehicleController.cs
+
+using ASP_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_App1.Controllers                      //DO NOT change the namespace name
+{
+    public class VehicleController : Controller    //DO NOT change the class name
+    {
+       // Implement 'Registration' action
+       
+       public ActionResult Registration(){
+           return View();
+       }
+       
+        // Implement 'Registration' action as Http POST
+        
+        [HttpPost]
+        public ActionResult Registration(Registration r){
+            ViewBag.CustomerName = r.CustomerName;
+            ViewBag.VehicleNo = r.VehicleNo;
+            ViewBag.PhoneNumber = r.PhoneNumber;
+            ViewBag.City = r.City;
+            return View("Confirm");
+        }
+        
+    }
+}
+
+2.Registration.cshtml
+
+<div style="text-align:center">
+    <h1 style="text-decoration:underline;">One Stop Service</h1>
+        <form action="Registration" method="post">
+        <table style="margin-left: auto; margin-right: auto;">
+            <tr>
+                <td><label for="name">Customer Name:</label></td>
+                <td><input type="text" id="name" name="CustomerName"/></td>
+            </tr>
+            <tr>
+                <td><label for="phno">Phone Number</label></td>
+                <td><input type="number" id="phno" name="PhoneNumber"/></td>
+            </tr>
+            <tr>
+                <td><label for="vnumber">Vehicle Number</label></td>
+                <td><input type="text" id="vnumber" name="VehicleNo"/></td>
+            </tr>
+            <tr>
+                <td><label for="vmodel">Vehicle Model</label></td>
+                <td><input type="text" id="vmodel" name="VehicleModel"/></td>
+            </tr>
+            <tr>
+                <td><label for="city">City</label></td>
+                <td><input type="text" id="city" name="City"/></td>
+            </tr>
+            <tr>
+                <td><label>Service Type</label></td>
+                <td><input type="radio" name="Servicetype" id="stype1" /> Regular
+                    <input type="radio" name="Servicetype" id="stype2" /> Others
+                </td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Confirm" /></td>
+                <td><input type="reset" value="Reset" /></td>
+            </tr>
+        </table>
+</form>
+</div>
+
+3.Confirm.cshtml
+
+<b>Welcome,
+<br>
+<br>
+Your booking for vehicle Number, @ViewBag.VehicleNo was confirmed.
+<br>
+Our service adviser (@ViewBag.City) will call you in Phone Number : @ViewBag.PhoneNumber</b>
+
+4.Registration.cs
+
+//THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_App1.Models
+{
+    public class Registration
+    {
+        public String CustomerName { get; set; }
+        public long PhoneNumber { get; set; }
+        public string VehicleNo { get; set; }
+        public string City { get; set; }
+        public string VehicleModel { get; set; }
+        public string ServiceType { get; set; }
+
+    }
+}
+
+
+Ex 5-1 Partial View
+
+1.ChTrust.cshtml
+
+@Html.Partial("_HeaderNavBar")
+<table>
+<tr>
+    <td><label for="name">Name</label></td>
+    <td><input type="text" id="name" /></td>
+</tr>
+<tr>
+    <td><label for="phno">Phone Number</label></td>
+    <td><input type="text" id="phno" /></td>
+</tr>
+<tr>
+    <td><label for="donationfor">Donation For</label></td>
+    <td><select id="donationfor">
+            <option value="Education">Education</option>
+    </td>
+</tr>
+<tr>
+    <td><label for="amount">Amount</label></td>
+    <td><input type="number" id="amount" /></td>
+</tr>
+<tr>
+    <td><label>Donation Type</label></td>
+    <td><input type="radio" name="dtype" id="dtype1" /> One Time Donation
+        <input type="radio" name="dtype" id="dtype2" /> Recurring Donation
+    </td>
+</tr>
+<tr>
+    <td><button>Proceed</button>
+</tr>
+</table>
+@Html.Partial("_FooterNavBar")
+
+
+2.ChTrustController.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_App1.Controllers          //DO NOT change the namespace name
+{
+    public class ChTrustController : Controller         //DO NOT change the class name
+    {
+        // Implement 'ChTrust' action
+        public ActionResult ChTrust(){
+            return View();
+        }
+        // Implement 'HeaderNavBar' action 
+        public PartialViewResult _HeaderNavBar(){
+            return PartialView();
+        }
+        // Implement 'FooterNavBar' action 
+        public PartialViewResult _FooterNavBar(){
+            return PartialView();
+        }
+    }
+}
+
+3._HeaderNavBar.cshtml
+
+<h1>Help Our Charity</h1>
+
+4._FooterNavBar.cshtml
+
+<h5 style="text-align:center;">Thank you For Your Support;</h5>
+
+
+Ex 6-2 Entity Framework Integration With ASP MVC
+
+1.StudentController.cs
+
+using ASP_EF_App1.DAL;
+using ASP_EF_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_EF_App1.Controllers            //DO NOT change the namespace name
+{
+    public class StudentController : Controller     //DO NOT change the class name
+    {
+        public ActionResult Placement()
+        {
+            /**  DO NOT REMOVE THE BELOW 2 LINES **/
+            StudentDAO sd = new StudentDAO();
+            sd.AddPlacements();
+            /**   END OF 2 LINES  **/
+            
+
+            //Implement code here
+            
+            CollegeContext context = new CollegeContext();
+            List<Placement> listOfPlacements = context.Placements.ToList();
+            return View(listOfPlacements);
+            
+        }
+    }
+}
+
+2.CollegeContext.cs
+
+using ASP_EF_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+
+namespace ASP_EF_App1.DAL         //DO NOT change the namespace name
+{
+    public class CollegeContext :DbContext          //DO NOT change the class name
+    {
+        public CollegeContext() : base("CollegeContext")        //DO NOT change the context name
+        {
+        }
+        
+        //Implement property for 'Placements' with required declaration
+        public DbSet<Placement> Placements {get; set;}
+    }
+}
+
+3.Placement.cs
+
+//THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_EF_App1.Models
+{
+    public class Placement
+    {
+        public int PlacementId { get; set; }
+        public int StudentId { get; set; }
+        public String StudentName { get; set; }
+        public String Company { get; set; }
+        public String PlacementYear { get; set; }
+    }
+}
+
+4.Placement.cshtml
+
+@model List<ASP_EF_App1.Models.Placement>
+<h3>Students Placement Details</h3>
+<table>
+        <tr>
+            <th>Placement Id</th>
+            <th>Student Id</th>
+            <th>Student Name</th>
+            <th>Company</th>
+            <th>Placement Year</th>
+        </tr>
+        @foreach(var item in Model){
+        <tr>
+            <td>@item.PlacementId</td>
+            <td>@item.StudentId</td>
+            <td>@item.StudentName</td>
+            <td>@item.Company</td>
+            <td>@item.PlacementYear</td>
+        </tr>}
+</table>
+
+Ex 6-3 Entity Framework Integration With ASP MVC - POST
+
+1.StudentController.cs
+
+using ASP_EF_App1.DAL;
+using ASP_EF_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_EF_App1.Controllers   //DO NOT change the namespace name
+{
+    public class StudentController : Controller     //DO NOT change the class name
+    {
+        
+        // Implement 'Index' action. 
+            
+        public ActionResult Index(){
+            Student student = new Student();
+            student.StudentName =  "Johana";
+            student.EnrolledDate = DateTime.ParseExact("25-06-2018","dd-MM-yyyy",null);
+            student.Department = "Art";
+            student.PhoneNumber = 9876565434;
+            return RedirectToAction("AddDetail",student);
+        }   
+        
+        // Implement 'AddDetail' action
+        
+        public ActionResult AddDetail(Student student){
+            CollegeContext context = new CollegeContext();
+            context.Students.Add(student);
+            context.SaveChanges();
+            return View("ViewDetails",student);
+        }
+        
+    }
+}
+
+2.CollegeContext.cs
+
+using ASP_EF_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+
+namespace ASP_EF_App1.DAL           //DO NOT change the namespace name
+{
+    public class CollegeContext :DbContext      //DO NOT change the class name
+    {
+        public CollegeContext() : base("CollegeContext")  //DO NOT change the context name
+        {
+        }
+        
+        //Implement property for 'Students' with required declaration
+        public DbSet<Student> Students {get; set;}
+    }
+}
+
+3.Student.cs
+
+//THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_EF_App1.Models
+{
+    public class Student
+    {
+        public int StudentId { get; set; }
+        public String StudentName { get; set; }
+        public DateTime EnrolledDate { get; set; }
+        public String Department { get; set; }
+        public long PhoneNumber { get; set; }
+    }
+}
+
+4.ViewDetails.cshtml
+
+@model ASP_EF_App1.Models.Student
+
+<p>Store the below Student data.</p><br />
+<p>StudentName = "@Model.StudentName"</p><br />
+<p>Department = "@Model.Department"</p><br />
+<p>PhoneNumber = @Model.PhoneNumber</p><br />
+<p>EnrolledDate = @Model.EnrolledDate.ToString("dd-MM-yyyy")</p>
+
+Ex 6-4 Entity Framework Integration With ASP - POST
+
+1.AddProjectDetails.cshtml
+
+@model ASP_EF_App1.Models.Project
+@using(Html.BeginForm("ProjectDetail","Project",FormMethod.Post))
+{
+    @Html.LabelFor(m=>m.ProjectName)
+    @Html.TextBoxFor(m=>m.ProjectName)
+    @Html.LabelFor(m=>m.Platform)
+    @Html.TextBoxFor(m=>m.Platform)
+    @Html.LabelFor(m=>m.Client)
+    @Html.TextBoxFor(m=>m.Client)
+    @Html.LabelFor(m=>m.Duration)
+    @Html.TextBoxFor(m=>m.Duration)
+   <button id="submit" type="submit">Submit</button>
+}
+
+2.Project.cs
+
+//THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_EF_App1.Models
+{
+    public class Project
+    {
+        public int ProjectId { get; set; }
+        public String ProjectName { get; set; }
+        public String Platform { get; set; }
+        public String Client { get; set; }
+        public int Duration { get; set; }
+    }
+}
+
+3.ProjectContext.cs
+
+using ASP_EF_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+
+namespace ASP_EF_App1.DAL        //DO NOT change the namespace name
+{
+    public class ProjectContext : DbContext        //DO NOT change the class name
+    {
+
+        public ProjectContext() : base("ProjectDB")   //DO NOT change the context name
+        {
+
+
+        }
+        public DbSet<Project> Projects {get; set;}
+        //Implement property for 'Projects' with required declaration
+    }
+}
+
+4.ProjectController.cs
+
+using ASP_EF_App1.DAL;
+using ASP_EF_App1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ASP_EF_App1.Controllers      //DO NOT change the namespace name
+{
+    public class ProjectController : Controller //DO NOT change the class name
+    {
+        // Implement 'ProjectDetail' action
+      // Implement 'ProjectDetail' action with HttpPost
+      ProjectContext context= new ProjectContext();
+      public ActionResult ProjectDetail()
+      {
+          return View("AddProjectDetails");
+      }
+      [HttpPost]
+      public ActionResult ProjectDetail(Project p)
+      {
+          context.Projects.Add(p);
+          context.SaveChanges();
+          return View("ViewProjectDetails",p);
+      }
+    
+    }
+}
+
+5.ViewProjectDetails.cshtml
+
+@model ASP_EF_App1.Models.Project
+<table>
+<tr>
+    <td>
+    ProjectId
+    </td>
+    <td>
+    @Html.DisplayFor(m=>m.ProjectId)
+    </td>
+</tr>
+<tr>
+    <td>
+   ProjectName
+    </td>
+    <td>
+    @Model.ProjectName
+    </td>
+</tr>
+<tr>
+    <td>
+    Platform
+    </td>
+    <td>
+   @Model.Platform
+    </td>
+</tr>
+<tr>
+    <td>
+    Client
+    </td>
+    <td>
+   @Model.Client
+    </td>
+</tr>
+<tr>
+    <td>
+    Duration
+    </td>
+    <td>
+    @Model.Duration
+    </td>
+</tr>
+</table>
+
