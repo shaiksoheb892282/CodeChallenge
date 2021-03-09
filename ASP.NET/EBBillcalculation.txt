@@ -1,0 +1,209 @@
+//EBBill.cs
+
+//THIS IS FOR REFERENCE ONLY. YOU ARE NOT REQUIRED TO MAKE ANY CHANGES HERE 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ASP_App1.Models
+{
+    public class EBBill
+    {
+        
+        public int Bill_No { set; get; }
+        public String Consumer_Name { set; get; }
+        public int Pre_Reading { set; get; }
+        public int Cur_Reading { set; get; }
+        public int Bill_Amount { set; get; }
+
+    }
+}
+
+
+
+
+
+//EBBillController
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using ASP_App1.Models;
+
+namespace ASP_App1.Controllers
+{
+    public class EBBillController : Controller
+    {
+        // GET: EBBill
+        [HttpGet]
+        public ActionResult EBBill()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EBBill(EBBill EBBill)
+        {            
+                int units = EBBill.Cur_Reading - EBBill.Pre_Reading;
+                if (units <= 50)
+                    EBBill.Bill_Amount = 50 * 1;
+                else if (units > 50 && units <= 100)
+                    EBBill.Bill_Amount = 50 * 1 + (units - 50) * 2;
+                 else if (units > 100 && units <= 200)
+                    EBBill.Bill_Amount = 50 * 1 + 50 * 2 + (units - 100) * 3;
+                else if (units > 200)
+                    EBBill.Bill_Amount = 50 * 1 + 50 * 2 + 100 * 3 + (units - 200) * 5;
+                else
+                { }
+                ViewBag.Message = "Your Bill Amount: " + EBBill.Bill_Amount;
+            TempData["customer"] = EBBill;
+            
+                return View(EBBill);
+        }
+
+        public ActionResult Print()
+        {
+            if (TempData.ContainsKey("customer"))
+            {
+                EBBill eb = (EBBill)TempData["customer"];
+                ViewBag.Bill_No = eb.Bill_No;
+                ViewBag.Consumer_Name = eb.Consumer_Name;
+                ViewBag.Pre_Reading = eb.Pre_Reading;
+                ViewBag.Cur_Reading = eb.Cur_Reading;
+                ViewBag.Bill_Amount = eb.Bill_Amount;              
+            }
+            return View();
+        }
+    }
+}
+
+
+
+
+
+
+
+//EBBill.cshtml
+@model ASP_App1.Models.EBBill
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EBBill</title>
+</head>
+<body style="background-color:khaki;">
+    <div>
+        <h1>Electric Bill calculation</h1>
+        @using (Html.BeginForm())
+        {
+        <table>
+            <tr>
+                <td>Bill Number</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Bill_No, htmlAttributes: new { id = "Bill_No" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>Consumer Name</td>
+             
+                <td>
+                    @Html.TextBoxFor(model => model.Consumer_Name, htmlAttributes: new { id = "Consumer_Name" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>Previous Reading</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Pre_Reading, htmlAttributes: new { id = "Pre_Reading" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>Current Reading</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Cur_Reading, htmlAttributes: new { id = "Cur_Reading" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" id="Submit" value="Bill_Amount" />
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.ActionLink("Print Bill", "Print")
+                </td>
+                <td></td>                
+            </tr>
+            <tr>
+                <td colspan="2">
+                    @if (ViewBag.Message != null)
+                    {
+                        @ViewBag.Message
+                    }
+                </td>
+            </tr>
+        </table>
+        }
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+//Print.cshtml
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Print</title>
+</head>
+<body>
+    <div>
+        <h2>EBBill</h2>
+        <hr />
+        Bill_No
+        <br />
+        @ViewBag.Bill_No
+        <br />
+        Consumer_Name
+        <br />
+        @ViewBag.Consumer_Name
+        <br />
+        Pre_Reading
+        <br />
+        @ViewBag.Pre_Reading
+        <br />
+        Cur_Reading
+        <br />
+        @ViewBag.Cur_Reading
+        <br />
+        ViewBag.Bill_Amount
+        <br />
+        @ViewBag.Bill_Amount
+        <br />
+    </div>
+</body>
+</html>
+
