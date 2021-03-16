@@ -1,0 +1,267 @@
+///////////////Expence/////////////
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ExpenseManagement.Models      //DO NOT change the namespace name
+{
+   public class Expense    //DO NOT change the class name
+    {
+	 [Key]
+        public int ExpenseId { get; set; }
+
+        [Required(ErrorMessage = "Please Provide Valid Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = true)]
+        public DateTime DateOfExpense { get; set; }
+
+        [Required(ErrorMessage = "Please Select An Expense Type")]
+        public string ExpenseType { get; set; }
+
+       // public IEnumerable<SelectListItem> Expensetype { get; set; }
+        [Required(ErrorMessage = "Please Provide Expense Amount")]
+        public int Amount { get; set; }
+	//Declare Properties with respective annotations required for validation	 
+    }
+}
+
+
+/////////////ExpenceContext/////////////
+
+using ExpenseManagement.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ExpenseManagement.Models        //DO NOT change the namespace name
+{
+    class ExpenseContext : DbContext     //DO NOT change the class name
+    {
+      
+        public ExpenseContext() : base("EMS_DB")   //DO NOT change the connection string name
+        {
+        }
+         public DbSet<Expense> Expenses { get; set; }
+		//Declare property 'Expenses' of type DbSet<Expense>. 
+    }
+}
+
+
+	 	  	 	 	   	  	    	 	
+
+
+//////////////Expence Controller/////////////
+
+using ExpenseManagement.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ExpenseManagement.Controllers            //DO NOT change the namespace name
+{
+    public class ExpenseController : Controller    //DO NOT change the class name   
+    {
+		
+        public ActionResult Index()         //DO NOT change the action name
+        {
+            //fill code here
+             var context = new ExpenseContext();
+            List<Expense> expense = context.Expenses.ToList();
+            return View(expense);
+        }
+
+        public ActionResult AddExpense()   //DO NOT change the action name
+        {
+            var viewModel = new ExpenseViewModel();
+            //fill code here
+                        ViewBag.ExpenseTypes = viewModel.ExpenseTypeList;
+            return View(viewModel);
+        }
+	 	  	 	 	   	  	    	 	
+        [HttpPost]
+	public ActionResult AddExpense(Expense Expense)    //DO NOT change the action name
+        {
+            var viewModel = new ExpenseViewModel();
+            ViewBag.ExpenseTypes = viewModel.ExpenseTypeList;
+            //fill code here
+             if (ModelState.IsValid)
+            {
+                var context = new ExpenseContext();
+                context.Expenses.Add(Expense);
+                context.SaveChanges();
+
+             //   return RedirectToAction("Index");
+              return View(viewModel);
+             }
+            ViewBag.Flag=1;
+            return View(viewModel);
+        }
+    }
+}
+
+///////////Expence View Model////////////
+
+//THIS CLASS IS FOR YOUR REFRENCE. YOU NEED NOT CHANGE HERE.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ExpenseManagement.Models
+{
+    public class ExpenseViewModel
+    {
+
+        public Expense Expense { get; set; }
+
+
+        public IEnumerable<SelectListItem> ExpenseTypeList
+        {
+            get
+            {
+                return new List<SelectListItem>()
+                     {
+                       new SelectListItem { Text = "Food Expense", Value = "Food Expense" },
+                        new SelectListItem { Text = "Health Expense", Value = "Health Expense" },
+                        new SelectListItem { Text = "Travel Expense", Value = "Travel Expense" },
+                        new SelectListItem { Text = "Entertainment Expense", Value = "Entertainment Expense" },
+                     };
+            }
+            set
+            {
+
+            }
+
+        }
+    }
+}
+
+
+//////////Layout///////////
+
+<!DOCTYPE html><html><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@ViewBag.Title - My ASP.NET Application</title>
+@Styles.Render("/Content/css") @Scripts.Render("/bundles/modernizr")
+</head>
+<body><div class="navbar navbar-inverse navbar-fixed-top">
+<div class="container"><div class="navbar-header">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+<span class="icon-bar"></span><span class="icon-bar"></span>
+<span class="icon-bar"></span></button>
+@Html.ActionLink("Expense Management System", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</div>
+<div class="navbar-collapse collapse">
+<ul class="nav navbar-nav">
+<li>@Html.ActionLink("Home", "Index", "Home")</li>
+<li>@Html.ActionLink("About", "About", "Home")</li>
+<li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+<li>@Html.ActionLink("ExpenseList", "Index", "Expense")</li>
+</ul> </div></div></div><div class="container body-content">
+@RenderBody() <hr /><footer>
+<p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+</footer></div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+</body></html>
+
+
+///////////AddExpence//////////////
+
+
+@model ExpenseManagement.Models.ExpenseViewModel
+@using (Html.BeginForm("AddExpense", "Expense", FormMethod.Post))
+{
+    <div >
+        <div >
+            @Html.LabelFor(model => model.Expense.ExpenseType)
+            @Html.DropDownListFor(model => model.Expense.ExpenseType, (IEnumerable<SelectListItem>)ViewBag.ExpenseTypes,"Select ExpenseTypes", new { htmlAttributes = new { id="Expense_ExpenseType" } })
+            @Html.ValidationMessageFor(model => model.Expense.ExpenseType, "")
+        </div>
+ <div >
+            @Html.LabelFor(model => model.Expense.Amount)
+            <div >
+                @Html.EditorFor(model => model.Expense.Amount,new { htmlAttributes = new { id="Expense_Amount" } })
+                @Html.ValidationMessageFor(model => model.Expense.Amount, "")
+            </div>
+        </div>
+        <div >
+            @Html.LabelFor(model => model.Expense.DateOfExpense)
+            <div>
+                @Html.EditorFor(model => model.Expense.DateOfExpense,new { htmlAttributes = new { id="Expense_DateOfExpense" } })
+                @Html.ValidationMessageFor(model => model.Expense.DateOfExpense, "")
+            </div>
+        </div>
+        <div >
+            <div >
+                <input type="submit" id="Submit" value="Add Expense"  />
+            </div>
+        </div>
+    </div>
+}
+<div id="1"></div>
+
+
+
+//////////////Index/////////////////
+
+@model IEnumerable<ExpenseManagement.Models.Expense>
+<h2>Index</h2>
+<p>
+    @Html.ActionLink("Create New", "AddExpense")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpenseId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfExpense)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpenseType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpenseId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfExpense)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpenseType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            @*<td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.ExpenseId }) |
+                    @Html.ActionLink("Details", "Details", new { id=item.ExpenseId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id=item.ExpenseId })
+                </td>*@
+        </tr>
+    }
+</table>
+
+
+
+
